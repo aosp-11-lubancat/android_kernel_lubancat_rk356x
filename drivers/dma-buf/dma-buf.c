@@ -46,7 +46,7 @@
 
 static inline int is_dma_buf_file(struct file *);
 
-#if !defined(CONFIG_DMABUF_CACHE)
+#ifdef CONFIG_ARCH_ROCKCHIP
 struct dma_buf_callback {
 	struct list_head list;
 	void (*callback)(void *);
@@ -80,7 +80,7 @@ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
 static void dma_buf_release(struct dentry *dentry)
 {
 	struct dma_buf *dmabuf;
-#if !defined(CONFIG_DMABUF_CACHE)
+#ifdef CONFIG_ARCH_ROCKCHIP
 	struct dma_buf_callback *cb, *tmp;
 #endif
 	int dtor_ret = 0;
@@ -101,7 +101,7 @@ static void dma_buf_release(struct dentry *dentry)
 	 */
 	BUG_ON(dmabuf->cb_shared.active || dmabuf->cb_excl.active);
 
-#if !defined(CONFIG_DMABUF_CACHE)
+#ifdef CONFIG_ARCH_ROCKCHIP
 	mutex_lock(&dmabuf->release_lock);
 	list_for_each_entry_safe(cb, tmp, &dmabuf->release_callbacks, list) {
 		if (cb->callback)
@@ -262,7 +262,7 @@ static __poll_t dma_buf_poll(struct file *file, poll_table *poll)
 		return 0;
 
 retry:
-	seq = read_seqcount_begin(&resv->seq);
+	seq = read_seqbegin(&resv->seq);
 	rcu_read_lock();
 
 	fobj = rcu_dereference(resv->fence);
@@ -271,7 +271,7 @@ retry:
 	else
 		shared_count = 0;
 	fence_excl = rcu_dereference(resv->fence_excl);
-	if (read_seqcount_retry(&resv->seq, seq)) {
+	if (read_seqretry(&resv->seq, seq)) {
 		rcu_read_unlock();
 		goto retry;
 	}
@@ -563,7 +563,7 @@ err_alloc_file:
 	return file;
 }
 
-#if !defined(CONFIG_DMABUF_CACHE)
+#ifdef CONFIG_ARCH_ROCKCHIP
 void *dma_buf_get_release_callback_data(struct dma_buf *dmabuf,
 					void (*callback)(void *))
 {
@@ -718,7 +718,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
 	spin_lock_init(&dmabuf->name_lock);
 	INIT_LIST_HEAD(&dmabuf->attachments);
 
-#if !defined(CONFIG_DMABUF_CACHE)
+#ifdef CONFIG_ARCH_ROCKCHIP
 	mutex_init(&dmabuf->release_lock);
 	INIT_LIST_HEAD(&dmabuf->release_callbacks);
 #endif
@@ -1426,12 +1426,12 @@ static int dma_buf_debug_show(struct seq_file *s, void *unused)
 
 		robj = buf_obj->resv;
 		while (true) {
-			seq = read_seqcount_begin(&robj->seq);
+			seq = read_seqbegin(&robj->seq);
 			rcu_read_lock();
 			fobj = rcu_dereference(robj->fence);
 			shared_count = fobj ? fobj->shared_count : 0;
 			fence = rcu_dereference(robj->fence_excl);
-			if (!read_seqcount_retry(&robj->seq, seq))
+			if (!read_seqretry(&robj->seq, seq))
 				break;
 			rcu_read_unlock();
 		}

@@ -3453,13 +3453,7 @@ exit:
 	}
 	mutex_unlock(&_pno_state->pno_mutex);
 exit_no_unlock:
-#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 7, 0))
-	if (waitqueue_active(&_pno_state->get_batch_done)) {
-		_pno_state->batch_recvd = TRUE;
-		wake_up(&_pno_state->get_batch_done);
-	}
-#else
-	if (waitqueue_active(&_pno_state->get_batch_done.wait))
+	if (swait_active(&_pno_state->get_batch_done.wait))
 		complete(&_pno_state->get_batch_done);
 #endif
 	return err;
