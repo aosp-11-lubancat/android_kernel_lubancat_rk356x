@@ -95,4 +95,10 @@ if [ ! -L "/boot/uEnv/uEnv.txt" ] ; then
 	echo "ln -sf $BOARD_uEnv /boot/uEnv/uEnv.txt"
 	ln -sf $BOARD_uEnv /boot/uEnv/uEnv.txt 
 fi
+
+if [ -e "/boot/initrd-4.19.232" ] ; then 
+	echo "ln -sf initrd-4.19.232 initrd-4.19.232-rt104"
+	ln -sf initrd-4.19.232 /boot/initrd-4.19.232-rt104 
+fi
+
 exit 0
