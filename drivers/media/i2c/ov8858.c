@@ -2863,9 +2863,6 @@ static int ov8858_g_mbus_config(struct v4l2_subdev *sd, unsigned int pad_id,
 				struct v4l2_mbus_config *config)
 {
 	struct ov8858  *sensor = to_ov8858 (sd);
-	struct device *dev = &sensor->client->dev;
-
-	dev_info(dev, "%s(%d) enter!\n", __func__, __LINE__);
 
 	if (2 == sensor->lane_num) {
 		config->type = V4L2_MBUS_CSI2_DPHY;
