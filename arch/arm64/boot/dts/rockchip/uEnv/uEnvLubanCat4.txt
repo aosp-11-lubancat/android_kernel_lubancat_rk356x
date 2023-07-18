@@ -1,0 +1,18 @@
+uname_r=5.10.160
+size=0x1000000
+cmdline="earlyprintk console=ttyFIQ0 console=tty1 consoleblank=0 loglevel=7 rootwait rw rootfstype=ext4"
+
+enable_uboot_overlays=1
+#overlay_start
+
+#dtoverlay=/dtb/overlay/rk3588-lubancat-dsi0-1080p-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-i2c5-m3-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-i2c6-m3-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-pwm10-m2-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-pwm11-m3-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-pwm14-m2-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-pwm15-m3-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-spi0-m2-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588-lubancat-uart0-m2-overlay.dtbo
+
+#overlay_end
