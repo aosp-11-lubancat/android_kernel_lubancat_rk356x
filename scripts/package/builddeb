@@ -210,9 +210,7 @@ debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
 for script in postinst postrm preinst prerm ; do
 	mkdir -p "$tmpdir$debhookdir/$script.d"
 	cat <<EOF > "$tmpdir/DEBIAN/$script"
-#!/bin/sh
-
-set -e
+#!/bin/bash -e
 
 # Pass maintainer script parameters to hook scripts
 export DEB_MAINT_PARAMS="\$*"
@@ -225,6 +223,10 @@ exit 0
 EOF
 	chmod 755 "$tmpdir/DEBIAN/$script"
 done
+
+sed '$d' "$tmpdir/DEBIAN/postinst" > "$tmpdir/DEBIAN/postinst.tmp"  && mv "$tmpdir/DEBIAN/postinst.tmp" "$tmpdir/DEBIAN/postinst"
+cat scripts/package/postinst_patch >> "$tmpdir/DEBIAN/postinst"
+chmod 755 "$tmpdir/DEBIAN/postinst"
 
 if [ "$ARCH" != "um" ]; then
 	if is_enabled CONFIG_MODULES; then
