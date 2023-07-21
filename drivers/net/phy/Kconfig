@@ -318,10 +318,10 @@ config VITESSE_PHY
 	help
 	  Currently supports the vsc8244
 
-config JLSEMI_JL2XX1_PHY
-	tristate "JLSemi JL2XX1 PHYs"
+config JLSEMI_PHY
+	tristate "JLSemi PHYs"
 	help
-	  Currently supports the JLSemi jl2xx1 PHYs.
+	  Currently supports the JLSemi PHYs.
 	  
 config XILINX_GMII2RGMII
 	tristate "Xilinx GMII2RGMII converter driver"
