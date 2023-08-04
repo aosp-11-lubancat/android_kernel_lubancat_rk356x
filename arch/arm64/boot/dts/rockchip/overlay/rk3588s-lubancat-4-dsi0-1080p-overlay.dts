@@ -20,7 +20,7 @@
 
 		__overlay__ {
 			status = "okay";
-			connect = <&vp3_out_dsi0>;
+			connect = <&vp2_out_dsi0>;
 		};
 	};
 
@@ -28,32 +28,26 @@
 		target = <&dsi0_in_vp2>;
 
 		__overlay__ {
-			status = "disabled";
-		};
-	};
-
-	fragment@3 {
-		target = <&dsi0_in_vp3>;
-
-		__overlay__ {
 			status = "okay";
 		};
 	};
 
-	fragment@4 {
+
+	fragment@3 {
 		target = <&dsi0>;
 
 		__overlay__ {
 			status = "okay";
-			power-supply = <&mipi_dsi0_power>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 
 			dsi0_panel: panel@0 {
+				status = "okay";
 				compatible = "simple-panel-dsi";
 				reg = <0>;
-				backlight = <&backlight>;
-				reset-gpios = <&gpio0 RK_PD0 GPIO_ACTIVE_LOW>;
+				backlight = <&backlight0>;
+				power-supply = <&mipi_dsi0_power>;
+				reset-gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_LOW>;
 
 				enable-delay-ms = <35>;
 				prepare-delay-ms = <6>;
@@ -96,7 +90,7 @@
 					05 00 01 10
 				];
 
-				disp_timings0: display-timings {
+				disp0_timings0: display-timings {
 					native-mode = <&dsi0_timing0>;
 					dsi0_timing0: timing0 {
 						clock-frequency = <131376000>;
@@ -120,8 +114,8 @@
 					#size-cells = <0>;
 					port@0 {
 						reg = <0>;
-						panel_in_dsi: endpoint {
-							remote-endpoint = <&dsi_out_panel>;
+						panel_in_dsi0: endpoint {
+							remote-endpoint = <&dsi0_out_panel>;
 						};
 					};
 				};
@@ -133,15 +127,15 @@
 
 				port@1 {
 					reg = <1>;
-					dsi_out_panel: endpoint {
-						remote-endpoint = <&panel_in_dsi>;
+					dsi0_out_panel: endpoint {
+						remote-endpoint = <&panel_in_dsi0>;
 					};
 				};
 			};
 		};
 	};
 
-	fragment@5 {
+	fragment@4 {
 		target = <&i2c5>;
 
 		__overlay__ {
@@ -151,13 +145,13 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&i2c5m3_xfer>;
 
-			gt911: gt911@5d {
+			gt911_dsi0: gt911@5d {
 				status = "okay";
 				compatible = "goodix,gt911";
 				reg = <0x5d>;
 				interrupt-parent = <&gpio0>;
 				interrupts = <RK_PC5 IRQ_TYPE_LEVEL_LOW>;
-				reset-gpios = <&gpio0 RK_PC6 GPIO_ACTIVE_LOW>;
+				reset-gpios = <&gpio0 RK_PC0 GPIO_ACTIVE_LOW>;
 				irq-gpios = <&gpio0 RK_PC5 GPIO_ACTIVE_HIGH>;
 				touchscreen-inverted-x = <1>;
 				touchscreen-inverted-y = <1>;
@@ -165,3 +159,4 @@
 		};
 	};
 };
+

@@ -5,7 +5,6 @@ cmdline="earlyprintk console=ttyFIQ0 console=tty1 consoleblank=0 loglevel=7 root
 enable_uboot_overlays=1
 #overlay_start
 
-#dtoverlay=/dtb/overlay/rk3588-lubancat-dsi0-1080p-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-i2c5-m3-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-i2c6-m3-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-pwm10-m2-overlay.dtbo
@@ -14,5 +13,13 @@ enable_uboot_overlays=1
 #dtoverlay=/dtb/overlay/rk3588-lubancat-pwm15-m3-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-spi0-m2-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-uart0-m2-overlay.dtbo
+
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-800x1280-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-1024x600-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-1080p-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-800x1280-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-1024x600-overlay.dtbo
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-1080p-overlay.dtbo
+
 
 #overlay_end
