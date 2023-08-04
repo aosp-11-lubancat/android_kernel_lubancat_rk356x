@@ -75,7 +75,7 @@
 
 &dsi0 {
 	status = "okay";
-	
+
 	dsi0_panel: panel@0 {
         status = "okay";
 		compatible = "simple-panel-dsi";
@@ -164,7 +164,7 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&i2c5m3_xfer>;
 
-	gt911@5d {
+	gt911_dsi0: gt911@5d {
 		status = "okay";
 		compatible = "goodix,gt911";
 		reg = <0x5d>;
