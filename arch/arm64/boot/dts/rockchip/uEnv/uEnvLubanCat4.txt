@@ -23,12 +23,23 @@ enable_uboot_overlays=1
 #dtoverlay=/dtb/overlay/rk3588-lubancat-uart7-m2-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588-lubancat-uart9-m2-overlay.dtbo
 
-# Display
-#dsi0 in vp2
+# Display 显示输出配置
+# 每个vp对应一个显示接口，同一个vp同时只能开启一个屏幕
+# 规则1.默认在主设备树中开启hdmi0(vp0,4K)和dp0(vp1,4K)，可即插即用。
+# 规则2.开启vp2和vp3设备树插件，配合规则1,可实现4k+4k+4k+2k四屏异显
+# 规则3.显示8K,同时占用vp0和vp1,要开启hdmi0-8K,则要关闭dp0-in-vp1
+# 规则4.开启vp2和vp3设备树插件,搭配规则3,可实现8k+4k+2k三屏异显
+
+#vp0
+#
+#vp1
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dp0-in-vp1-disabled-overlay.dtbo
+#vp2
+#dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dp0-in-vp2-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-800x1280-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-1024x600-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi0-1080p-overlay.dtbo
-#dsi1 in vp3
+#vp3
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-800x1280-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-1024x600-overlay.dtbo
 #dtoverlay=/dtb/overlay/rk3588s-lubancat-4-dsi1-1080p-overlay.dtbo
