@@ -1,0 +1,35 @@
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/rk3588-cru.h>
+
+/* dp0 display */
+/ {
+	fragment@0 {
+		target = <&hdptxphy_hdmi_clk0>;
+
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+
+	fragment@1 {
+		target = <&display_subsystem>;
+
+		__overlay__ {
+			/delete-property/ clocks;
+			/delete-property/ clock-names;
+		};
+	};
+
+	fragment@2 {
+		target = <&vop>;
+
+		__overlay__ {
+			status = "okay";
+			assigned-clocks = <&cru ACLK_VOP>;
+			assigned-clock-rates = <800000000>;
+		};
+	};
+};
+
