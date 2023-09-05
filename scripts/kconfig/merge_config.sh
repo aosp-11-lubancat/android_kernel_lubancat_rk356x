@@ -132,7 +132,11 @@ for MERGE_FILE in $MERGE_LIST ; do
 done
 
 if [ "$RUNMAKE" = "false" ]; then
-	cp -T -- "$TMP_FILE" "$KCONFIG_CONFIG"
+	if [ "$IS_MAC_OS" = true ] ; then
+		cp -rf "$TMP_FILE" "$KCONFIG_CONFIG"
+	else
+		cp -T -- "$TMP_FILE" "$KCONFIG_CONFIG"
+	fi
 	echo "#"
 	echo "# merged configuration written to $KCONFIG_CONFIG (needs make)"
 	echo "#"
