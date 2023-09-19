@@ -240,14 +240,14 @@
 			pinctrl-0 = <&sys_status_led_pin>;
 		};
 
-		fan: fan {
-			label = "fan";
-			default-state = "on";
-			linux,default-trigger = "none";
-			gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
-			pinctrl-names = "default";
-			pinctrl-0 = <&fan_pin>;
-		};
+		// fan: fan {
+		// 	label = "fan";
+		// 	default-state = "on";
+		// 	linux,default-trigger = "none";
+		// 	gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
+		// 	pinctrl-names = "default";
+		// 	pinctrl-0 = <&fan_pin>;
+		// };
 		
 		fan: pwm-fan {
 			compatible ="pwm-fan";
