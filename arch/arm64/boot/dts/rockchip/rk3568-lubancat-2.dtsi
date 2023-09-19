@@ -249,6 +249,18 @@
 			pinctrl-0 = <&fan_pin>;
 		};
 		
+		fan: pwm-fan {
+			compatible ="pwm-fan";
+			#cooling-cells = <2>;
+			pwms = <&pwme e 5ee0ee e>;
+			cooling-levels = <9 100 150 20 255>;
+			rockchip,temp-trips = <
+				50080	1
+				55000	2
+				68088	3
+				65088	4
+			>;
+		}
 	};
 
 	rk809_sound: rk809-sound {
