@@ -240,25 +240,25 @@
 			pinctrl-0 = <&sys_status_led_pin>;
 		};
 
-		// fan: fan {
-		// 	label = "fan";
-		// 	default-state = "on";
-		// 	linux,default-trigger = "none";
-		// 	gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
-		// 	pinctrl-names = "default";
-		// 	pinctrl-0 = <&fan_pin>;
-		// };
+		fan: fan {
+			label = "fan";
+			default-state = "on";
+			linux,default-trigger = "none";
+			gpios = <&gpio0 RK_PB7 GPIO_ACTIVE_HIGH>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&fan_pin>;
+		};
 		
 		fan: pwm-fan {
-			compatible ="pwm-fan";
+			compatible = "pwm-fan";
 			#cooling-cells = <2>;
-			pwms = <&pwme e 5ee0ee e>;
-			cooling-levels = <9 100 150 20 255>;
+			pwms = <&pwm0 0 500000 0>;
+			cooling-levels = <0 100 150 200 255>;
 			rockchip,temp-trips = <
-				50080	1
+				50000	1
 				55000	2
-				68088	3
-				65088	4
+				60000	3
+				65000	4
 			>;
 		}
 	};
