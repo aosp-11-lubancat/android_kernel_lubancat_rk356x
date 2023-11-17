@@ -121,11 +121,6 @@ static void stmmac_exit_fs(struct net_device *dev);
 
 #define STMMAC_COAL_TIMER(x) (jiffies + usecs_to_jiffies(x))
 
-#define RTL_8211E_PHY_ID  0x001cc915
-#define RTL_8211F_PHY_ID  0x001cc916
-#define YT_8531C_PHY_ID   0x4f51e91b
-#define JL_2101_PHY_ID	  0x937c4032
-
 /**
  * stmmac_verify_args - verify the driver parameters.
  * Description: it checks the driver parameters and set a default in case of
@@ -961,9 +956,6 @@ static int stmmac_init_phy(struct net_device *dev)
 	priv->oldlink = false;
 	priv->speed = SPEED_UNKNOWN;
 	priv->oldduplex = DUPLEX_UNKNOWN;
-
-	if (priv->plat->integrated_phy_power)
-		priv->plat->integrated_phy_power(priv->plat->bsp_priv, true);
 
 	if (priv->plat->phy_node) {
 		phydev = of_phy_connect(dev, priv->plat->phy_node,
@@ -2203,6 +2195,8 @@ static int stmmac_init_dma_engine(struct stmmac_priv *priv)
 	if (priv->extend_desc && (priv->mode == STMMAC_RING_MODE))
 		atds = 1;
 
+	msleep(1500);
+
 	ret = stmmac_reset(priv, priv->ioaddr);
 	if (ret) {
 		dev_err(priv->device, "Failed to reset the dma\n");
@@ -2738,9 +2732,6 @@ static int stmmac_release(struct net_device *dev)
 	if (dev->phydev) {
 		phy_stop(dev->phydev);
 		phy_disconnect(dev->phydev);
-		if (priv->plat->integrated_phy_power)
-			priv->plat->integrated_phy_power(priv->plat->bsp_priv,
-							 false);
 	}
 
 	stmmac_disable_all_queues(priv);
@@ -4277,95 +4268,6 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
 	return 0;
 }
 
-static int phy_rtl8211e_led_fixup(struct phy_device *phydev)
-{
-        int val;
-
-        printk("%s in\n", __func__);
-
-        /*switch to extension page44*/
-        phy_write(phydev, 31, 0x07);
-        phy_write(phydev, 30, 0x2c);
-
-        /*set led1(yellow) act*/
-        val = phy_read(phydev, 26);
-        val &= (~(1<<4));// bit4=0
-        val |= (1<<5);// bit5=1
-        val &= (~(1<<6));// bit6=0
-        phy_write(phydev, 26, val);
-
-        /*set led0(green) link*/
-        val = phy_read(phydev, 28);
-        val |= (7<<0);// bit0,1,2=1
-        val &= (~(7<<4));// bit4,5,6=0
-        val &= (~(7<<8));// bit8,9,10=0
-        phy_write(phydev, 28, val);
-
-        /*switch back to page0*/
-        phy_write(phydev,31,0x00);
-
-        return 0;
-}
-
-static int phy_rtl8211f_led_fixup(struct phy_device *phydev)
-{
-        int val;
-
-        printk("%s in\n", __func__);
-
-        /*switch to extension page 0xd04*/
-        phy_write(phydev, 0x1f, 0xd04);
-
-		/* led2(green)10/100/1000M  led1(yello)active */
-        val = 0x2f60;
-        phy_write(phydev, 0x10, val);
-
-		/* EEE led control */
-        val = 0x0;
-        phy_write(phydev, 0x11, val);
-        /*switch back to page0*/
-        phy_write(phydev,0x1f,0x00);
-
-        return 0;
-}
-
-static int phy_yt8531_led_fixup(struct phy_device *phydev)
-{
-        printk("%s in\n", __func__);
-        phy_write(phydev, 0x1e, 0xa00d);
-        phy_write(phydev, 0x1f, 0x670);
-
-        phy_write(phydev, 0x1e, 0xa00e);
-        phy_write(phydev, 0x1f, 0x2070);
-
-        phy_write(phydev, 0x1e, 0xa00f);
-        phy_write(phydev, 0x1f, 0x7e);
-
-        return 0;
-}
-
-static int phy_jl2101_led_fixup(struct phy_device *phydev)
-{
-        int val;
-
-        printk("%s in\n", __func__);
-
-        /*switch to extension page 0xd04*/
-        phy_write(phydev, 0x1f, 0xd04);
-
-		/* led2(green)10/100/1000M  led1(yello)active */
-        val = 0x2f60;
-        phy_write(phydev, 0x10, val);
-
-		/* EEE led control */
-        val = 0x0;
-        phy_write(phydev, 0x11, val);
-        /*switch back to page0*/
-        phy_write(phydev,0x1f,0x00);
-
-        return 0;
-}
-
 /**
  * stmmac_dvr_probe
  * @device: device pointer
@@ -4545,24 +4447,6 @@ int stmmac_dvr_probe(struct device *device,
 		}
 	}
 
-	/* register the PHY board fixup */
-	ret = phy_register_fixup_for_uid(RTL_8211E_PHY_ID, 0xffffffff, phy_rtl8211e_led_fixup);
-	if (ret)
-		pr_warn("Cannot register PHY board fixup.\n");
-
-	ret = phy_register_fixup_for_uid(RTL_8211F_PHY_ID, 0xffffffff, phy_rtl8211f_led_fixup);
-	if (ret)
-		pr_warn("Cannot register PHY board fixup.\n");
-
-	ret = phy_register_fixup_for_uid(YT_8531C_PHY_ID, 0xffffffff, phy_yt8531_led_fixup);
-	if (ret)
-		pr_warn("Cannot register PHY board fixup.\n");
-
-	ret = phy_register_fixup_for_uid(JL_2101_PHY_ID, 0xffffffff, phy_jl2101_led_fixup);
-	if (ret)
-		pr_warn("Cannot register PHY board fixup.\n");
-
-
 	ret = register_netdev(ndev);
 	if (ret) {
 		dev_err(priv->device, "%s: ERROR %i registering the device\n",
@@ -4677,9 +4561,6 @@ int stmmac_suspend(struct device *dev)
 		stmmac_pmt(priv, priv->hw, priv->wolopts);
 		priv->irq_wake = 1;
 	} else {
-		if (priv->plat->integrated_phy_power)
-			priv->plat->integrated_phy_power(priv->plat->bsp_priv,
-							 false);
 		stmmac_mac_set(priv, priv->ioaddr, false);
 		pinctrl_pm_select_sleep_state(priv->device);
 		/* Disable clock in case of PWM is off */
@@ -4760,9 +4641,6 @@ int stmmac_resume(struct device *dev)
 		/* reset the phy so that it's ready */
 		if (priv->mii)
 			stmmac_mdio_reset(priv->mii);
-		if (priv->plat->integrated_phy_power)
-			priv->plat->integrated_phy_power(priv->plat->bsp_priv,
-							 true);
 	}
 
 	mutex_lock(&priv->lock);
